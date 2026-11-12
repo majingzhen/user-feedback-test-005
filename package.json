@@ -1,0 +1,10 @@
+{
+  "name": "caustic-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Progressive WebGL2 path tracer with BVH, dielectric caustics and persistent accumulation.",
+  "scripts": {
+    "start": "node serve.mjs"
+  }
+}

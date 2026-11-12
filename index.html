@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a0d">
+  <title>Caustic Studio</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" data-icon="brand" aria-hidden="true"></span>
+        <span class="brand-copy">
+          <span class="brand-name">Caustic Studio</span>
+          <span class="brand-sub">Progressive path tracing</span>
+        </span>
+      </div>
+      <div class="topbar-actions">
+        <span class="gpu-pill" id="gpuPill"><span class="dot"></span><span id="gpuLabel">正在初始化 GPU</span></span>
+        <button class="btn btn-quiet" id="saveBtn" type="button" data-icon="save"><span>保存</span></button>
+        <button class="btn btn-primary" id="pauseBtn" type="button" data-icon="pause"><span id="pauseLabel">暂停采样</span></button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="stage-panel" aria-label="渲染视口">
+        <div class="stage-topline">
+          <div class="stage-title">
+            <span class="eyebrow">实时视口</span>
+            <span class="stage-meta">BVH · 路径追踪 · 渐进累积</span>
+          </div>
+          <div class="stage-actions">
+            <span class="history-state" id="historyState"><span class="dot"></span>历史重投影开启</span>
+          </div>
+        </div>
+        <div class="stage-canvas" id="stageCanvas">
+          <div class="canvas-frame" id="canvasFrame">
+            <canvas id="viewport" aria-label="路径追踪渲染结果"></canvas>
+            <div class="viewport-topline">
+              <div class="scene-tag">
+                <span class="eyebrow">Studio 01</span>
+                <span class="scene-name">黄铜 · 玻璃 · 柔光</span>
+              </div>
+              <span class="render-tag" id="renderTag">960 × 540</span>
+            </div>
+            <div class="pause-badge" id="pauseBadge" hidden data-icon="pause">
+              <span>采样已暂停</span><kbd>空格</kbd><span>恢复</span>
+            </div>
+            <div class="viewport-hud">
+              <div class="spp-block">
+                <span class="hud-label">采样</span>
+                <strong id="sppValue">0</strong>
+                <span class="hud-unit">spp</span>
+              </div>
+              <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+              <div class="hud-stats">
+                <span id="sppRate">2 spp / 帧</span>
+                <span class="separator"></span>
+                <span id="fpsValue">-- fps</span>
+                <span class="separator"></span>
+                <span id="saveState">未保存</span>
+              </div>
+              <button class="icon-btn hud-pause" id="hudPauseBtn" type="button" data-icon="pause" aria-label="暂停采样"></button>
+            </div>
+            <div class="interaction-hint">拖拽旋转 · 滚轮缩放 · 双击复位</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="inspector" aria-label="渲染控制台">
+        <section class="panel-section">
+          <div class="section-heading">
+            <div><h2>渲染</h2><p>采样预算与画面响应</p></div>
+            <span class="section-index">01</span>
+          </div>
+          <div id="renderControls" class="control-stack"></div>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading">
+            <div><h2>材质</h2><p>锁定项在批量重置时保留</p></div>
+            <span class="section-index">02</span>
+          </div>
+          <div id="materialList" class="material-list"></div>
+          <div class="scene-actions" id="materialActions"></div>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading">
+            <div><h2>累积</h2><p>关闭页面后自动续渲</p></div>
+            <span class="section-index">03</span>
+          </div>
+          <div class="storage-card">
+            <div class="storage-copy">
+              <span class="storage-icon" data-icon="archive" aria-hidden="true"></span>
+              <div><strong id="storageTitle">自动保存已开启</strong><span id="storageSub">等待首次累积</span></div>
+            </div>
+            <button class="icon-btn" id="clearAccumBtn" type="button" data-icon="refresh" aria-label="清除累积并重新采样" title="清除累积并重新采样"></button>
+          </div>
+          <div class="shortcut-list">
+            <span><kbd>空格</kbd> 暂停 / 恢复</span>
+            <span><kbd>R</kbd> 重新采样</span>
+            <span><kbd>双击</kbd> 复位相机</span>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toastHost" class="toast-host" aria-live="polite"></div>
+  <div id="errorOverlay" class="error-overlay" hidden>
+    <div class="error-panel">
+      <span class="error-icon" data-icon="warning" aria-hidden="true"></span>
+      <h2>无法启动渲染器</h2>
+      <p id="errorText">当前设备不支持所需的 WebGL2 浮点渲染能力。</p>
+      <button class="btn btn-primary" type="button" id="errorClose">知道了</button>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
